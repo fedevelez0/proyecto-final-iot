@@ -163,3 +163,4 @@ if uploaded_file:
             st.subheader("Filtro de Rango de Tiempo")
             start_date = st.date_input("Fecha inicial", value=df1.index.min())
             end_date = st.date_input("Fecha final", value=df1
+
