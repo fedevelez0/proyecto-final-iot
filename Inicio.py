@@ -17,9 +17,9 @@ st.markdown("""
 
 # Título y descripción
 st.title('📊 Análisis de datos de Sensores en Mi Ciudad')
-st.markdown("Esta aplicación permite analizar datos de temperatura y humedad en diferentes puntos de la ciudad.")
+st.markdown("Esta aplicación permite analizar datos de temperatura y humedad recolectados por sensores en diferentes puntos de la ciudad.")
 
-# Crear ubicación en mapa para Universidad EAFIT
+# Ubicación en mapa para Universidad EAFIT
 eafit_location = pd.DataFrame({
     'lat': [6.2006],
     'lon': [-75.5783],
@@ -49,23 +49,36 @@ if uploaded_file:
         # Pestañas para organizar análisis
         tab1, tab2, tab3, tab4 = st.tabs(["📈 Visualización", "📊 Estadísticas", "🔍 Filtros", "📅 Rango de Tiempo"])
 
+        # Pestaña de visualización de datos
         with tab1:
             st.subheader('Visualización de Datos')
             variable = st.selectbox("Seleccione variable a visualizar", ["temperatura", "humedad", "Ambas variables"])
+            chart_type = st.selectbox("Seleccione tipo de gráfico", ["Línea", "Área", "Barra"])
 
+            # Mostrar gráficos de la variable seleccionada
             if variable == "Ambas variables":
-                fig = px.line(df1, x=df1.index, y=['temperatura', 'humedad'], title="Temperatura y Humedad en el Tiempo")
-                st.plotly_chart(fig)
+                st.write("### Temperatura")
+                fig_temp = px.line(df1, x=df1.index, y='temperatura', title="Temperatura en el Tiempo") if chart_type == "Línea" else \
+                    px.area(df1, x=df1.index, y='temperatura', title="Temperatura en el Tiempo") if chart_type == "Área" else \
+                    px.bar(df1, x=df1.index, y='temperatura', title="Temperatura en el Tiempo")
+                st.plotly_chart(fig_temp)
+
+                st.write("### Humedad")
+                fig_hum = px.line(df1, x=df1.index, y='humedad', title="Humedad en el Tiempo") if chart_type == "Línea" else \
+                    px.area(df1, x=df1.index, y='humedad', title="Humedad en el Tiempo") if chart_type == "Área" else \
+                    px.bar(df1, x=df1.index, y='humedad', title="Humedad en el Tiempo")
+                st.plotly_chart(fig_hum)
             else:
-                fig = px.line(df1, x=df1.index, y=variable, title=f"{variable.capitalize()} en el Tiempo")
+                fig = px.line(df1, x=df1.index, y=variable, title=f"{variable.capitalize()} en el Tiempo") if chart_type == "Línea" else \
+                    px.area(df1, x=df1.index, y=variable, title=f"{variable.capitalize()} en el Tiempo") if chart_type == "Área" else \
+                    px.bar(df1, x=df1.index, y=variable, title=f"{variable.capitalize()} en el Tiempo")
                 st.plotly_chart(fig)
 
-            # Gráfico de distribución
+            # Gráfico de distribución y box plot
             st.write("### Distribución de Datos")
             fig_hist = px.histogram(df1, x=variable, title=f"Distribución de {variable.capitalize()}")
             st.plotly_chart(fig_hist)
 
-            # Box plot
             st.write("### Box Plot de Datos")
             fig_box = px.box(df1, y=variable, title=f"Box Plot de {variable.capitalize()}")
             st.plotly_chart(fig_box)
@@ -74,6 +87,7 @@ if uploaded_file:
             if st.checkbox('Mostrar datos crudos'):
                 st.write(df1)
 
+        # Pestaña de estadísticas
         with tab2:
             st.subheader('Análisis Estadístico')
             stat_variable = st.radio("Seleccione variable para estadísticas", ["temperatura", "humedad"])
@@ -93,6 +107,7 @@ if uploaded_file:
                     st.metric("Humedad Máxima", f"{stats_df['max']:.2f}%")
                     st.metric("Humedad Mínima", f"{stats_df['min']:.2f}%")
 
+        # Pestaña de filtros de datos
         with tab3:
             st.subheader('Filtros de Datos')
             filter_variable = st.selectbox("Seleccione variable para filtrar", ["temperatura", "humedad"])
@@ -127,6 +142,7 @@ if uploaded_file:
                 csv = filtrado_df_min.to_csv().encode('utf-8')
                 st.download_button(label="Descargar CSV", data=csv, file_name='datos_filtrados.csv', mime='text/csv')
 
+        # Pestaña de filtro de rango de tiempo
         with tab4:
             st.subheader("Filtro de Rango de Tiempo")
             start_date = st.date_input("Fecha inicial", value=df1.index.min())
