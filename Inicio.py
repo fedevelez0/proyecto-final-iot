@@ -158,5 +158,3 @@ if uploaded_file:
             ])
             fig_bar.update_layout(barmode='group', title="Comparación de Temperatura y Humedad Filtradas")
             st.plotly_chart(fig_bar)
-
-
