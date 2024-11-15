@@ -15,7 +15,6 @@ st.markdown("""
     .stAlert, .stDataframe, .stMetric { background-color: #ffffff; padding: 10px; border-radius: 5px; }
     .stButton>button { background-color: #2c3e50; color: #ffffff; padding: 10px; font-size: 16px; }
     h1, h2, h3, h4, h5, h6 { color: #2c3e50; }
-    .css-18e3th9 { padding-top: 2rem; } /* Ajuste para más espacio en el encabezado */
     </style>
 """, unsafe_allow_html=True)
 
@@ -158,3 +157,9 @@ if uploaded_file:
             ])
             fig_bar.update_layout(barmode='group', title="Comparación de Temperatura y Humedad Filtradas")
             st.plotly_chart(fig_bar)
+
+        # Pestaña de rango de tiempo
+        with tab4:
+            st.subheader("Filtro de Rango de Tiempo")
+            start_date = st.date_input("Fecha inicial", value=df1.index.min())
+            end_date = st.date_input("Fecha final", value=df1
