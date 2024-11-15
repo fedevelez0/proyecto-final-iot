@@ -162,5 +162,25 @@ if uploaded_file:
         with tab4:
             st.subheader("Filtro de Rango de Tiempo")
             start_date = st.date_input("Fecha inicial", value=df1.index.min())
-            end_date = st.date_input("Fecha final", value=df1
+            end_date = st.date_input("Fecha final", value=df1.index.max())
+            
+            # Filtrado por fecha
+            if start_date <= end_date:
+                df_filtered = df1.loc[start_date:end_date]
+                st.write(f"Datos desde {start_date} hasta {end_date}")
+                st.line_chart(df_filtered[variable])
+            else:
+                st.error("La fecha de inicio debe ser anterior o igual a la fecha final.")
+                
+    except Exception as e:
+        st.error(f'Error al procesar el archivo: {str(e)}')
+else:
+    st.warning('Por favor, cargue un archivo CSV para comenzar el análisis.')
+
+# Footer
+st.markdown("""
+    ---
+    Desarrollado para el análisis de datos de sensores urbanos.
+    Ubicación: Universidad EAFIT, Medellín, Colombia
+""")
 
